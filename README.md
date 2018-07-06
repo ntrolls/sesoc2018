@@ -2,6 +2,16 @@
 
 This repository contains slides and other course materials for the [short summer lecture on Search Based Software Engineering (SBSE)](http://www.kiise.or.kr/conference/conf/022/), hosted by the Software Engineering Society of KIISE.
 
+## Dependencies
+
+The hands-on materials have the following dependencies:
+
+- Java 8 Runtime
+- Python (provided materials are written for Python 3 but version dependency is not significant)
+- [DEAP](https://github.com/DEAP/deap): Distributed Evolutionary Algorithms in Python. You can install via `pip`: `pip install deap`
+- [numpy](http://www.numpy.org): `pip install numpy`
+- [scipy](https://www.scipy.org): `pip install scipy`
+
 ## Hands-on 1: Travelling Salesman Problem Hands-on
 
 The goal is to solve a TSP instance. An utility module, [`evaluate.py`](tsp/evaluate.py), and a data file [`bier127.dat`](tsp/bier127.dat) that contains a TSP instance (you can find the original file at [`bier127.tsp`](http://elib.zib.de/pub/mp-testdata/tsp/tsplib/tsp/bier127.tsp)), are available from this repository. It contains coordinates of 127 beer gardens in [Ausburg](https://en.wikipedia.org/wiki/Augsburg). Your goal is to find the shortest route that passes all the beer gardens!

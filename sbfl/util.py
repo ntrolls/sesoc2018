@@ -29,3 +29,6 @@ def read_test_data():
 
 def ranking(faulty_index, scores):
 	return ss.rankdata(scores, method="max")[faulty_index]
+if __name__ == '__main__':
+	training_data = read_training_data()
+	print(training_data[0])

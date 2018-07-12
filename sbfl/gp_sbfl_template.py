@@ -18,6 +18,8 @@ def protectedDiv(left, right):
         return left / right
     except ZeroDivisionError:
         return 1
+def protectedSqrt(ind):
+    return math.sqrt(abs(ind))
 
 pset = gp.PrimitiveSet("MAIN", 4) # four input variables
 pset.addPrimitive(operator.add, 2)
@@ -25,6 +27,7 @@ pset.addPrimitive(operator.sub, 2)
 pset.addPrimitive(operator.mul, 2)
 pset.addPrimitive(protectedDiv, 2)
 pset.addPrimitive(operator.neg, 1)
+pset.addPrimitive(protectedSqrt, 1)
 pset.renameArguments(ARG0='ep')
 pset.renameArguments(ARG1='ef')
 pset.renameArguments(ARG2='np')
@@ -51,9 +54,18 @@ def evalSBFL(individual, training_data):
     # compute suspiciousness score for each spectrum tuples
     # then, use ranking(faulty_index, scores) to get the rank of the faulty
     # statement
-    #
+    ranks = []
+    formula = toolbox.compile(expr=individual)
+    chosen_training_data = random.sample(training_data, k=10)
+    for (faulty_index, spectrum) in chosen_training_data:
+        scores = [formula(ep, ef, np, nf) for (ep, ef, np, nf) in spectrum]
+        # scores = []
+        # for (ep, ef, np, nf) in spectrum:
+        #     score = formula(ep, ef, np, nf)
+        #     scores.append(score)
+        rank = ranking(faulty_index, scores)
+        ranks.append(rank)
     # use the average of 20 rankings as the fitness
-    
     return numpy.mean(ranks),
 
 training_data = read_training_data();    
@@ -64,8 +76,8 @@ toolbox.register("mate", gp.cxOnePoint)
 toolbox.register("expr_mut", gp.genFull, min_=0, max_=2)
 toolbox.register("mutate", gp.mutUniform, expr=toolbox.expr_mut, pset=pset)
 
-toolbox.decorate("mate", gp.staticLimit(key=operator.attrgetter("height"), max_value=4))
-toolbox.decorate("mutate", gp.staticLimit(key=operator.attrgetter("height"), max_value=4))
+toolbox.decorate("mate", gp.staticLimit(key=operator.attrgetter("height"), max_value=5))
+toolbox.decorate("mutate", gp.staticLimit(key=operator.attrgetter("height"), max_value=5))
 
 def main():
 
@@ -80,7 +92,7 @@ def main():
     mstats.register("min", numpy.min)
     mstats.register("max", numpy.max)
 
-    pop, log = algorithms.eaSimple(pop, toolbox, 0.8, 0.1, 60, stats=mstats,
+    pop, log = algorithms.eaSimple(pop, toolbox, 1.0, 0.1, 100, stats=mstats,
                                    halloffame=hof, verbose=True)
     # print log
     return pop, log, hof

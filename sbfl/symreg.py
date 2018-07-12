@@ -57,7 +57,7 @@ def evalSymbReg(individual, points):
     func = toolbox.compile(expr=individual)
     # Evaluate the mean squared error between the expression
     # and the real function : x**4 + x**3 + x**2 + x
-    sqerrors = ((func(x) - x**4 - x**3 - x**2 - x)**2 for x in points)
+    sqerrors = ((func(x) - (x**2 + x))**2 for x in points)
     return math.fsum(sqerrors) / len(points),
 
 toolbox.register("evaluate", evalSymbReg, points=[x/10. for x in range(-10,10)])
@@ -70,9 +70,9 @@ toolbox.decorate("mate", gp.staticLimit(key=operator.attrgetter("height"), max_v
 toolbox.decorate("mutate", gp.staticLimit(key=operator.attrgetter("height"), max_value=17))
 
 def main():
-    random.seed(318)
+    # random.seed(318)
 
-    pop = toolbox.population(n=300)
+    pop = toolbox.population(n=30)
     hof = tools.HallOfFame(1)
     
     stats_fit = tools.Statistics(lambda ind: ind.fitness.values)
@@ -83,10 +83,11 @@ def main():
     mstats.register("min", numpy.min)
     mstats.register("max", numpy.max)
 
-    pop, log = algorithms.eaSimple(pop, toolbox, 0.5, 0.1, 40, stats=mstats,
+    pop, log = algorithms.eaSimple(pop, toolbox, 0.5, 0.1, 100, stats=mstats,
                                    halloffame=hof, verbose=True)
     # print log
     return pop, log, hof
 
 if __name__ == "__main__":
-    main()
+    pop, log, hof = main()
+    print(hof[0])

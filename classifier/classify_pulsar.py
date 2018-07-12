@@ -68,9 +68,15 @@ def evalClassifier(individual):
     global training_xs, training_ys
     # Transform the tree expression in a callable function
     func = toolbox.compile(expr=individual)
-    fitness = 0
 
-    return fitness,
+    num_correct = 0
+    for i in range(len(training_xs)):
+        # get GP score
+        score = func(*training_xs[i])
+        predicted = 1 if score > 0 else 0
+        if predicted == training_ys[i]:
+            num_correct += 1
+    return num_correct,
 
 toolbox.register("evaluate", evalClassifier)
 toolbox.register("select", tools.selTournament, tournsize=3)
